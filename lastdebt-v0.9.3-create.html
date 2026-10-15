@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>LAST DEBT — Create Game</title><style>*{box-sizing:border-box}html,body{margin:0;background:#06132e;color:#fff;font-family:system-ui,-apple-system,sans-serif}.screen{min-height:100svh;display:flex;align-items:center;justify-content:center}.poster{position:relative}.poster>img{width:100%;height:100%;display:block}.toast{position:fixed;z-index:9;left:50%;bottom:10%;transform:translateX(-50%);padding:12px 17px;border-radius:12px;background:#092b4a;border:2px solid #69ffd5;font-weight:800}.toast[hidden]{display:none}</style><style>
+.poster{height:min(100svh,150vw)!important;min-height:0!important;width:min(100vw,66.6667svh);aspect-ratio:2/3;overflow:hidden}.screen{overflow:auto!important}.hot{position:absolute;cursor:pointer;background:transparent;border:0;touch-action:manipulation}.hot:focus-visible{outline:3px solid #fff}.overlay{position:absolute;display:flex;align-items:center;justify-content:center;color:white;text-shadow:0 0 9px #21aaff;font-weight:900}.snowfield{background:linear-gradient(#04132b,#061d43);border:2px solid #5ad4ff;box-shadow:inset 0 0 13px #118aff99,0 0 5px #06cfff;border-radius:9px}.snowfield:focus{outline:2px solid white}.toast{max-width:90vw;white-space:normal!important;text-align:center}input{font-family:inherit} 
+</style></head><body><main class="screen"><div class="poster"><img src="lastdebt-create-clean.webp" alt="Illustrated snowman Create Game lobby">
+<a class="hot" style="left:1%;top:1%;width:28%;height:6%" href="lastdebt-v0.9.3-online.html" aria-label="Back to Play Online"></a>
+<!-- Opaque inset hides the artwork's five blank boxes; HTML draws the actual six digits. -->
+<div class="overlay" id="digits" style="left:25.8%;top:32.3%;width:39%;height:7.4%;background:#04132b;border-radius:8px;gap:1%;padding:1%"></div>
+<button class="hot" id="copy" style="left:65%;top:32%;width:12%;height:9%" aria-label="Copy room code"></button>
+<!-- Mask the baked-in 1/3 count so the number changes cleanly. -->
+<div class="overlay" id="count" style="left:35.2%;top:46.3%;width:29.5%;height:4.2%;background:#071a3b;border:2px solid #55c9ff;border-radius:7px;font-size:clamp(10px,3.2vw,23px)">PLAYERS (1/3)</div>
+<div class="overlay snowfield" id="name0" style="left:15.4%;top:62.5%;width:19.4%;height:3.3%;font-size:clamp(11px,2.6vw,18px)"></div>
+<div class="overlay snowfield" id="name1" style="left:40.3%;top:62.5%;width:19.4%;height:3.3%;font-size:clamp(11px,2.6vw,18px)"></div>
+<div class="overlay snowfield" id="name2" style="left:65.1%;top:62.5%;width:19.4%;height:3.3%;font-size:clamp(11px,2.6vw,18px)"></div>
+<!-- Status is always rendered by JS, never inherited from a static poster. -->
+<div class="overlay" id="ready0" style="left:16%;top:66.1%;width:19%;height:4.2%;background:#07142c;border-radius:5px;font-size:clamp(10px,2.5vw,17px)">○ NOT READY</div>
+<div class="overlay" id="ready1" style="left:40%;top:66.1%;width:20%;height:4.2%;background:#07142c;border-radius:5px;font-size:clamp(10px,2.5vw,17px)">WAITING…</div>
+<div class="overlay" id="ready2" style="left:65%;top:66.1%;width:20%;height:4.2%;background:#07142c;border-radius:5px;font-size:clamp(10px,2.5vw,17px)">WAITING…</div>
+<button class="hot" id="ready" style="left:24%;top:74%;width:52%;height:9%" aria-label="Ready up"></button>
+<div class="overlay" id="message" style="left:25%;top:85.5%;width:50%;height:3.6%;background:#071b40;border-radius:5px;font-size:clamp(10px,2.6vw,17px)">Tap READY UP to get ready</div>
+</div></main><div class="toast" id="toast" hidden></div><script>
+const el=id=>document.getElementById(id);function toast(t){el('toast').textContent=t;el('toast').hidden=false;clearTimeout(window.t);window.t=setTimeout(()=>el('toast').hidden=true,2200)}
+let name=localStorage.getItem('lastdebt-name')||'Player';el('name0').textContent=name;
+// Demonstration lobby: browser-local only; multiplayer syncing requires a backend.
+let code=sessionStorage.getItem('lastdebt-room-code');if(!/^\d{6}$/.test(code||'')){let a=new Uint32Array(1);crypto.getRandomValues(a);code=String(100000+a[0]%900000);sessionStorage.setItem('lastdebt-room-code',code)}
+for(const digit of code){const d=document.createElement('span');d.className='snowfield';d.style.cssText='flex:1;min-width:0;height:100%;display:grid;place-items:center;font-size:clamp(12px,4.2vw,29px)';d.textContent=digit;el('digits').append(d)}
+el('copy').onclick=async()=>{try{await navigator.clipboard.writeText(code);toast('❄ CODE COPIED!')}catch(e){toast('ROOM CODE: '+code)}};
+let ready=false;el('ready').onclick=()=>{ready=!ready;el('ready0').textContent=ready?'✓ READY':'○ NOT READY';el('ready0').style.color=ready?'#45ff7d':'white';el('message').textContent=ready?'Waiting for 2 more players…':'Tap READY UP to get ready';toast(ready?'☃️ YOU ARE READY!':'Ready cancelled')};
+</script></body></html>
