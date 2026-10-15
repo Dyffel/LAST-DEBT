@@ -1,4 +1,1 @@
-LAST DEBT v0.9.1 — name popup artwork update only.
-Upload all files from this ZIP to repository root (extract first). Keep existing six lastdebt-*.webp card images.
-Open lastdebt-v0.9.1.html.
-Room lobby remains a local prototype, not networked multiplayer.
+LAST DEBT v0.9.2 — Upload ALL files in this ZIP to the ROOT of your GitHub repository (extract ZIP first). Open lastdebt-v0.9.2.html. Existing older versions remain untouched. Create and Join screens now use clean illustrated artwork and HTML-driven dynamic values. IMPORTANT: room codes and ready status are LOCAL DEMO ONLY; joining from another device needs a multiplayer backend.
