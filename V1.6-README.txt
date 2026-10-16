@@ -1,0 +1,14 @@
+LAST DEBT v1.6 — real Supabase multiplayer lobby.
+
+Upload all files in this ZIP to the ROOT of the GitHub repository, replacing matching filenames.
+Open https://dyffel.github.io/LAST-DEBT/ after GitHub Pages updates.
+
+Requires Supabase Anonymous Sign-Ins enabled and SQL scripts #1 and #2 installed.
+Host: Play Online > Create Game > enter name > Create. Share six-digit code.
+Guests: Play Online > Join Game > code + name > Join.
+All players press READY; host presses START GAME.
+
+IMPORTANT: START GAME only updates shared lobby status. The actual v1.5 gameplay is still LOCAL, not online-synchronized. Do not mistake it for live multiplayer.
+The project uses Supabase JavaScript CDN; phones require internet access.
+
+If creation fails with 401/anonymous disabled, enable Anonymous Sign-Ins in Supabase Authentication settings.
