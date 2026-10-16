@@ -1,0 +1,7 @@
+LAST DEBT v2.0 multiplayer integration
+
+Upload all files to the repository root. The lobby redirects to lastdebt-v2.0-gameplay.html when started.
+
+IMPORTANT: Run V2.0-REQUIRED-PATCH.sql in Supabase SQL Editor first; it adds pending_deadline to the safe game state RPC.
+
+TEST WITH THREE DISTINCT ANONYMOUS SESSIONS. Not yet production-verified. Known issue: bounty-chain interactions may need additional server-side handling.
