@@ -1,0 +1,14 @@
+LAST DEBT v2.1 — TEST UPDATE
+1. In Supabase SQL Editor, run V2.1-REQUIRED-PATCH.sql ONCE.
+2. Upload all files from this ZIP to the root of your GitHub Pages repository (replace matching files).
+3. Refresh the site; create a new room or finish/rematch an existing match.
+
+Changes:
+- SKIP TURN: 5 push-ups, no debt change.
+- RANDOM CARD: swap one selected card for one random card, 10 push-ups, once per turn.
+- First player automatically gets their third card on rematches.
+- Existing emergency REPLACE CARD still works for entirely unplayable hands; shares the once-per-turn swap limit.
+
+Important: Push-ups are an honor-system challenge, not automatically verified or counted.
+Match/escape bug not confirmed: a player escaping at 0 debt is intended even with cards left.
+This is an untested integration patch: verify with three real players.
