@@ -32,7 +32,7 @@ function paint(s){state=s;el('count').textContent=`PLAYERS (${s.players.length}/
  el('message').textContent=s.status==='playing'?'Game started — multiplayer gameplay is next!':`${s.players.filter(p=>p.ready).length}/3 READY · Waiting for all players`;
  el('ready').disabled=s.status!=='waiting';el('ready').setAttribute('aria-label',me.ready?'Cancel ready':'Ready up');
  startBtn.hidden=!me.is_host;startBtn.disabled=s.status!=='waiting'||s.players.length!==3||!s.players.every(p=>p.ready);
- if(s.status==='playing'||s.status==='finished'){location.replace('lastdebt-v2.0-gameplay.html?room='+encodeURIComponent(code));return;}
+ if(s.status==='playing'||s.status==='finished'){location.replace('lastdebt-v3.0.html?room='+encodeURIComponent(code));return;}
 }
 async function refresh(){if(!code||busy)return;try{const s=await ldRpc('get_room_state',{p_room_code:code});paint(s)}catch(e){toast('Sync error: '+ldMessage(e))}}
 async function init(){el('message').textContent='Connecting to multiplayer…';try{
