@@ -1,0 +1,1 @@
+LAST DEBT v3.2 — visual-only update. Upload all files to the same GitHub Pages repository. Existing lobby redirects to lastdebt-v3.0.html, which is updated to v3.2. Original gameplay and Supabase SQL unchanged. Test on three devices before relying on it. Player positions: self centered, opponents left/right.

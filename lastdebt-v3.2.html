@@ -1,0 +1,124 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>LAST DEBT v3.2 — Winter Arena</title><style>
+*{box-sizing:border-box}
+:root{--ice:#67dcff;--night:#06122e;--wood:#623820}
+html{background:#04102b}
+body{margin:0;color:#effbff;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% 26%,#2464a55a,transparent 56%),linear-gradient(#04112c66,#031029dd),url("lastdebt-arena-backdrop.webp") center/cover fixed;min-height:100svh}
+.wrap{max-width:500px;min-height:100svh;margin:auto;padding:env(safe-area-inset-top,8px) 10px calc(20px + env(safe-area-inset-bottom,0px));position:relative;overflow:hidden}
+.wrap:before{content:"";pointer-events:none;position:absolute;inset:0;background:radial-gradient(circle at 15% 18%,#a9eeff66 0 1px,transparent 2px),radial-gradient(circle at 75% 30%,#fff8 0 1.5px,transparent 3px);background-size:89px 111px,141px 167px;opacity:.6}
+.wrap>*{position:relative}
+h1{font-size:clamp(26px,7.5vw,39px);letter-spacing:1px;text-align:center;margin:12px auto 4px;color:#e3f9ff;-webkit-text-stroke:.35px #62dfff;text-shadow:0 3px #15538a,0 0 19px #29caff;font-weight:1000}
+h1:before,h1:after{content:"❄";color:#71ddff;font-size:.7em;padding:0 5px}
+.sub{text-align:center;color:#d5f6ff;font-size:12px;font-weight:900;letter-spacing:.5px;border:2px solid #74d9ff;border-radius:30px;background:#071b41e8;box-shadow:0 0 12px #36c5ff77;padding:7px;max-width:285px;margin:0 auto 12px}
+#loading{text-align:center;padding:35px}
+.hidden{display:none!important}
+.players{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:3px}
+.player{min-width:0;border:2px solid #7fb7e7;background:linear-gradient(165deg,#0c2b57ef,#06132fe9);border-radius:13px;padding:7px 3px 8px;text-align:center;box-shadow:0 5px 13px #0008}
+.player.turn{border-color:#4af2ff;box-shadow:0 0 18px #21e4ffbb}
+.player.me{background:linear-gradient(165deg,#15528ae8,#071d47f0)}
+.player.escaped{border-color:#ffe79d}
+.player strong{font-size:clamp(10px,2.8vw,14px);display:block;overflow-wrap:anywhere;line-height:1.2;min-height:30px}
+.player .debt{font-size:clamp(24px,7vw,37px);font-weight:1000;color:#ff6d78;text-shadow:0 1px 5px #000}
+.tag{font-size:clamp(9px,2.3vw,12px);color:#b8eaff}
+.snowstage{height:clamp(190px,56vw,270px);position:relative;margin:2px -10px 0;background:radial-gradient(ellipse at 50% 85%,#ffba6550,transparent 40%)}
+.snowstage .cabin{position:absolute;top:15%;left:4%;font-size:35px;filter:drop-shadow(0 0 14px #ffbe55)}
+.snowstage .tree{position:absolute;top:7%;right:5%;font-size:50px;filter:drop-shadow(0 0 8px #b4efff)}
+.snowmen{position:absolute;inset:0;display:flex;justify-content:space-around;align-items:flex-end;padding:0 7px 44px}
+.snowman{width:31%;max-width:142px;filter:drop-shadow(0 6px 7px #0008);transform-origin:bottom}
+.snowman.center{transform:translateY(-14px) scale(1.07)}
+.snowman svg{display:block;width:100%;height:auto}
+.woodtable{position:absolute;bottom:0;left:1%;right:1%;height:43%;border-radius:50% 50% 25% 25% / 35% 35% 20% 20%;border:7px solid #a7dff8;background:repeating-linear-gradient(93deg,#7b4728 0 32px,#63351e 33px 37px,#90542d 38px 66px);box-shadow:0 8px #28170e,0 15px 20px #000b,inset 0 7px 0 #d6f5ff;transform:perspective(280px) rotateX(19deg)}
+.woodtable:after{content:"❄  🃏  ❄";position:absolute;left:0;right:0;top:23%;text-align:center;font-size:29px;text-shadow:0 0 12px #fff}
+.panel{margin:8px 0;background:linear-gradient(170deg,#0b2b51ef,#06142ef0);border:2px solid #5ebee7;border-radius:15px;padding:10px;box-shadow:0 4px 16px #0008}
+.panel.board{margin-top:0;border:0;background:transparent;box-shadow:none;padding:0}
+.status{text-align:center;font-weight:1000;font-size:clamp(16px,4.4vw,22px);color:#ecfbff;text-shadow:0 0 12px #00bbff}
+.board .status{border:2px solid #68dfff;background:#07244ef0;border-radius:14px;padding:10px 6px;box-shadow:0 0 16px #21bfff77}
+.log{text-align:center;color:#d5ecff;min-height:23px;padding:5px;font-size:12px}
+.deck{display:flex;justify-content:center;gap:18px;font-size:11px;color:#c7eaff}
+.hand{display:flex;gap:7px;justify-content:center;padding:12px 0 14px;overflow:visible}
+.card{width:32%;max-width:160px;min-width:0;flex-shrink:0;background:#07142a;border:3px solid #58c5ff;border-radius:12px;overflow:hidden;color:white;cursor:pointer;box-shadow:0 5px 12px #0009;transition:transform .15s}
+.card:nth-child(1){transform:rotate(-5deg)}.card:nth-child(3){transform:rotate(5deg)}
+.card.selected,.card:nth-child(1).selected,.card:nth-child(3).selected{border-color:#ffdf76!important;transform:translateY(-10px) scale(1.04)}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.card b{display:block;padding:7px 2px;font-size:clamp(10px,2.9vw,13px)}
+.controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
+.controls select,.controls input{background:#091c38;color:white;border:2px solid #7dc7f5;border-radius:9px;padding:9px;font-size:16px;max-width:100%}
+button.action{background:linear-gradient(#24855e,#085339);border:2px solid #8cffe0;border-radius:11px;padding:11px 12px;color:white;font-weight:900;min-height:45px;cursor:pointer}
+button.action:disabled{opacity:.42;cursor:not-allowed}
+.alt{background:linear-gradient(#315e90,#102849)!important;border-color:#8bcfff!important}
+.danger{background:linear-gradient(#875030,#4d2719)!important;border-color:#f5c392!important}
+#skip,#reroll{flex:1 1 44%;min-width:0;min-height:62px;border:3px solid #a6dafa!important;background:linear-gradient(#9a6239,#5d321e)!important;box-shadow:inset 0 4px #e1a773,0 5px #1e1010!important;font-size:12px}
+#play{min-width:55%;background:linear-gradient(#2699b9,#084a78);border-color:#94f3ff}
+#target{max-width:100%}
+.warning{color:#ffcccc;text-align:center;min-height:20px;font-size:12px}
+.reaction{border-color:#ffba59;text-align:center}.reaction h2{color:#ffe2a4}
+.small{font-size:11px;color:#c0d7e7;line-height:1.5}
+.overlay{position:fixed;inset:0;background:#000c;display:grid;place-items:center;z-index:5;padding:16px}
+.modal{background:linear-gradient(#123858,#071329);border:3px solid #8fd9ff;border-radius:20px;max-width:470px;width:100%;padding:22px;text-align:center;box-shadow:0 0 35px #16aaff77}
+.result{padding:9px;border-bottom:1px solid #ffffff22}
+.modal button{margin:8px}.toplink{color:#9bdcff;font-size:12px}
+@media(max-width:350px){.wrap{padding-left:6px;padding-right:6px}.snowstage{height:185px}.player strong{font-size:10px}}
+
+/* v3.1 illustrated scene: visual-only upgrade, gameplay JS unchanged */
+body{background:linear-gradient(#05112bb0,#03122bcc),url("lastdebt-arena-backdrop.webp") center/cover fixed}
+.wrap{max-width:480px;padding:calc(env(safe-area-inset-top,0px) + 3px) 9px calc(env(safe-area-inset-bottom,0px) + 12px)}
+h1{font-size:clamp(23px,6vw,32px);margin:3px 0 2px;line-height:1.06}
+.sub{margin:4px auto 7px;padding:4px;font-size:11px}
+.players{gap:5px;margin-bottom:5px}
+.player{padding:5px 3px;border-radius:11px}
+.player strong{min-height:17px;font-size:clamp(10px,2.7vw,13px)}
+.player .debt{font-size:clamp(21px,6vw,29px)}
+.player .tag{font-size:10px}
+.snowstage.scene-art{height:auto;aspect-ratio:864/418;background:url("lastdebt-v3.1-snowmen.webp") center/cover no-repeat;margin:0 -9px;border-radius:12px;box-shadow:inset 0 0 20px #00172b,0 5px 15px #0007;border:2px solid #4dc4ff}
+.board .status{font-size:clamp(15px,4.1vw,20px);padding:7px 4px}
+.panel{margin:5px 0;padding:7px}
+.log{font-size:11px;min-height:17px;padding:3px}
+.hand{padding:7px 0 10px;gap:7px}
+.card{max-width:126px;border-width:2px}
+.card img{aspect-ratio:1.1;object-fit:cover}
+.card b{padding:5px 2px}
+.controls{gap:7px}
+button.action{min-height:39px;padding:8px 10px}
+#skip,#reroll{min-height:49px;font-size:11px}
+.small{font-size:10px}
+
+/* v3.2 visual-only override: no Supabase or gameplay changes */
+body{background:radial-gradient(ellipse at 50% 28%,#114a7d99,transparent 67%),linear-gradient(#04112b,#061532 68%,#071026)}
+.wrap{max-width:460px;padding:env(safe-area-inset-top,0px) 9px calc(14px + env(safe-area-inset-bottom,0px))}
+h1{font-size:clamp(22px,6.4vw,33px);line-height:1.06;max-width:320px;margin:8px auto 8px;letter-spacing:0;text-shadow:0 0 17px #1ecfff,0 2px #11508d}
+h1:before,h1:after{content:'';padding:0}
+.sub{font-size:11px;padding:5px 8px;margin-bottom:5px;max-width:275px}
+.arena{position:relative;isolation:isolate;height:clamp(290px,95vw,435px);margin:0 -9px;overflow:hidden;background:radial-gradient(ellipse at 50% 12%,#2a77aa,#071c45 65%,#041129);border-radius:12px}
+.arena-landscape{position:absolute;inset:0;background:url('lastdebt-v3.1-snowmen.webp') center bottom/110% auto no-repeat;filter:saturate(1.08);mask-image:linear-gradient(to bottom,transparent 5%,black 35%,black 85%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 5%,black 35%,black 85%,transparent 100%)}
+.snowstage.scene-art{position:absolute;inset:auto 0 0;height:71%;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none;margin:0;background:url('lastdebt-v3.1-snowmen.webp') center center/cover no-repeat;mask-image:linear-gradient(to bottom,transparent 0%,black 28%,black 85%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,black 28%,black 85%,transparent 100%)}
+.players{position:absolute;z-index:2;inset:0;display:block;pointer-events:none}
+.player{position:absolute;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;width:31%;min-height:80px;border:1.5px solid #78bbf7;border-radius:13px;padding:5px 3px;background:linear-gradient(130deg,#0a2853ed,#071530e8);box-shadow:0 0 10px #0caaff55,inset 0 0 9px #1b8dd333;pointer-events:auto}
+.player:nth-child(1){top:27%;left:1.5%}.player:nth-child(2){top:2%;left:33%;width:34%;border-color:#56e5ff}.player:nth-child(3){top:27%;right:1.5%}
+.player strong{min-height:0;font-size:clamp(10px,3vw,14px);line-height:1.15;color:#f4fcff;text-transform:uppercase;letter-spacing:.2px;max-width:100%;overflow-wrap:anywhere}
+.player .debt{font-size:clamp(16px,5.5vw,25px);line-height:1.05;color:#ff8079;text-shadow:0 0 8px #ff4b5a55}
+.player .tag{font-size:clamp(9px,2.4vw,11px);color:#d2e9ff}
+.player .player-icon{font-size:20px;line-height:1}
+.player.turn{border-color:#5efbff;box-shadow:0 0 15px #00dbff99,inset 0 0 12px #28b6e866}
+.player.me{background:linear-gradient(140deg,#0a3865f5,#07152fed)}
+.panel.board{margin:0 auto 4px}.board .status{padding:7px 4px;font-size:clamp(15px,4.5vw,21px);border-radius:11px;letter-spacing:.3px}
+.log{font-size:11px;padding:3px;min-height:15px}.deck{font-size:10px;gap:12px}
+.panel:not(.board):not(.reaction){margin:5px 0;padding:7px 7px 9px;border-color:#2a92c4;background:linear-gradient(#081f41eb,#06142eea)}
+.panel:not(.board):not(.reaction)>.status{font-size:14px;color:#d7f5ff}
+.hand{padding:8px 0 12px;gap:8px}.card{max-width:125px;border-width:2px;border-radius:11px}.card img{aspect-ratio:1}.card b{font-size:11px;padding:5px 2px}
+.controls{gap:6px}button.action{min-height:42px}#play{min-width:52%;padding:8px}
+#skip,#reroll{min-height:52px;font-size:11px;padding:6px 4px}
+.small{font-size:10px;margin:7px 0 0}
+@media(max-width:350px){.arena{height:290px}.player{min-height:72px}.player:nth-child(1),.player:nth-child(3){top:28%}}
+</style></head><body><main class="wrap"><h1>❄ LAST DEBT · ONLINE ARENA ❄</h1><div class="sub" id="roomLabel">Connecting…</div><div id="loading">Connecting to the three-player match…</div><div id="game" class="hidden"><div class="arena"><div class="arena-landscape" aria-hidden="true"></div><section class="players" id="players"></section><div class="snowstage scene-art" aria-label="Three illustrated snowmen sitting around a snowy card table"></div></div><section class="panel board"><div class="status" id="turnLabel"></div><div class="log" id="log"></div><div class="deck"><span id="drawCount"></span><span id="discardCount"></span></div></section><section id="reaction" class="panel reaction hidden"><h2>🛡️ INCOMING THIEF!</h2><p id="reactionText"></p><div class="controls"><button id="shieldYes" class="action">USE SHIELD</button><button id="shieldNo" class="action danger">TAKE +5 DEBT</button></div></section><section class="panel"><div class="status">🃏 YOUR CARDS <span id="handCount"></span></div><div class="hand" id="hand"></div><div class="controls"><select id="target" aria-label="Choose target"></select><label id="betLabel" class="hidden">Bet <input id="bet" type="number" value="11" min="11" max="20" style="width:76px"></label><button id="play" class="action">PLAY CARD</button><button id="replace" class="action alt">🔄 REPLACE CARD</button><button id="reroll" class="action alt">🎲 RANDOM CARD · +10 DEBT</button><button id="skip" class="action danger">💪 SKIP TURN · +5 DEBT</button></div><p class="warning" id="notice"></p><p class="small" style="text-align:center">Draw up to three cards automatically at the start of your turn. Random card swap adds 10 debt (once per turn); skip turn adds 5 debt. SHIELD works only during a THIEF attack.</p></section></div><div id="end" class="overlay hidden"><div class="modal"><h2>🏆 MATCH OVER 🏆</h2><div id="results"></div><p id="votes"></p><button id="rematch" class="action">🔄 VOTE REMATCH</button><button id="view" class="action alt">VIEW BOARD</button></div></div><button id="reopen" class="action alt hidden">🏆 VIEW RESULTS</button><p style="text-align:center"><a class="toplink" href="lastdebt-v0.9.3.html">← Main menu</a></p></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="lastdebt-supabase.js"></script><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);const code=new URLSearchParams(location.search).get('room')||sessionStorage.getItem('lastdebt-room-code');let myId,state,selected=-1,busy=false,lastMatch=null,poll=null,overlayDismissed=false;const names={relief:'RELIEF',thief:'THIEF',shield:'SHIELD',mirror:'MIRROR',gamble:'GAMBLE',bounty:'BOUNTY'};const colors={relief:'#0dff9b',thief:'#ff6666',shield:'#45c5ff',mirror:'#cb83ff',gamble:'#ffc658',bounty:'#ff984c'};
+function msg(t){$('notice').textContent=t}function me(){return state?.players?.find(p=>p.user_id===myId)}function mine(){return state?.turn_user_id===myId&&state.status==='playing'&&!state.pending_action}function playable(c){const d=me()?.debt||0;return c==='relief'?d>0:c==='gamble'?d>=11&&d<=89:['thief','mirror','bounty'].includes(c)}function targetNeeded(c){return ['thief','mirror','bounty'].includes(c)}
+function paint(s){if(!s)return;state=s;$('loading').classList.add('hidden');$('game').classList.remove('hidden');if(lastMatch!==s.match_id){lastMatch=s.match_id;selected=-1;overlayDismissed=false}$('roomLabel').textContent='ROOM '+code+' · MATCH '+s.match_number;const turn=s.players.find(p=>p.user_id===s.turn_user_id);$('turnLabel').textContent=s.status==='finished'?'🏆 MATCH COMPLETE':mine()?'❄ YOUR TURN ❄':(turn?.name||'Player')+"'s turn";$('log').textContent=s.last_action||'';$('drawCount').textContent='🃏 Deck: '+s.draw_count;$('discardCount').textContent='♻ Discard: '+s.discard_count;
+$('players').replaceChildren();[...s.players].sort((a,b)=>{const rank=p=>p.user_id===myId?1:s.players.filter(x=>x.user_id!==myId).findIndex(x=>x.user_id===p.user_id)===0?0:2;return rank(a)-rank(b)}).forEach(p=>{const d=document.createElement('div');d.className='player'+(p.user_id===s.turn_user_id?' turn':'')+(p.user_id===myId?' me':'')+(p.escaped?' escaped':'');const a=document.createElement('div');a.textContent=p.escaped?'🏆':'☃️';a.className='player-icon';const n=document.createElement('strong');n.textContent=p.name+(p.user_id===myId?' (YOU)':'');const debt=document.createElement('div');debt.className='debt';debt.textContent=p.debt+' DEBT';const label=document.createElement('div');label.className='tag';label.textContent=p.escaped?'ESCAPED':p.bounty_owner?'🎯 BOUNTY · '+p.hand_count+' cards':p.hand_count+' cards';d.append(a,n,debt,label);$('players').append(d)});
+$('hand').replaceChildren();const hand=s.my_hand||[];hand.forEach((c,i)=>{const b=document.createElement('button');b.className='card'+(selected===i?' selected':'');b.style.borderColor=selected===i?'#ffe18d':colors[c];const im=document.createElement('img');im.src='lastdebt-'+c+'.webp';im.alt=names[c]||c;const t=document.createElement('b');t.textContent=names[c]||c;b.append(im,t);b.onclick=()=>{selected=i;paint(state)};$('hand').append(b)});$('handCount').textContent='('+hand.length+'/3)';
+const card=hand[selected];const target=$('target');const old=target.value;target.replaceChildren();s.players.filter(p=>p.user_id!==myId&&!p.escaped).forEach(p=>{const opt=document.createElement('option');opt.value=p.user_id;opt.textContent=p.name+' ('+p.debt+' debt)';target.append(opt)});if([...target.options].some(o=>o.value===old))target.value=old;target.classList.toggle('hidden',!targetNeeded(card));$('betLabel').classList.toggle('hidden',card!=='gamble');$('play').disabled=busy||!mine()||!card||!playable(card);const stuck=hand.length>0&&!hand.some(playable);$('replace').classList.toggle('hidden',!mine()||!stuck||me()?.replaced_this_turn);$('replace').disabled=busy||selected<0;$('reroll').disabled=busy||!mine()||selected<0||!!me()?.replaced_this_turn;$('skip').disabled=busy||!mine();const pending=s.pending_action;const isTarget=pending?.target===myId;const deadline=s.pending_deadline?new Date(s.pending_deadline).getTime():0;const remain=deadline?Math.max(0,Math.ceil((deadline-Date.now())/1000)):null;$('reaction').classList.toggle('hidden',!isTarget);if(isTarget){$('reactionText').textContent='You are targeted! '+(remain!==null?remain+' seconds left.':'React now.');$('shieldYes').disabled=busy||!hand.includes('shield')||remain===0;$('shieldNo').disabled=busy||remain===0;}$('notice').textContent=busy?'Sending action…':s.status==='finished'?'Vote for a rematch.':pending?(isTarget?'Choose SHIELD or accept THIEF.':'Waiting for THIEF reaction…'):mine()?stuck?'No playable cards: select one and REPLACE.':card&&!playable(card)?'That card cannot be played now.':'Choose a card to play.':'Waiting for your turn.';
+const finished=s.status==='finished';$('reopen').classList.toggle('hidden',!finished);if(finished){const loser=s.players.find(p=>p.user_id===s.loser_user_id);$('results').replaceChildren();(s.escape_order||[]).forEach((id,i)=>{const p=s.players.find(x=>x.user_id===id);const r=document.createElement('div');r.className='result';r.textContent=(i===0?'🥇':'🥈')+' '+(p?.name||'Player')+' — ESCAPED';$('results').append(r)});if(loser){const r=document.createElement('div');r.className='result';r.textContent='💀 '+loser.name+' — '+loser.debt+' DEBT';$('results').append(r)}$('votes').textContent=s.players.filter(p=>p.rematch_ready).length+'/3 voted to rematch';$('rematch').textContent=me()?.rematch_ready?'✓ VOTED — CANCEL?':'🔄 VOTE REMATCH';$('end').classList.toggle('hidden',overlayDismissed)}else $('end').classList.add('hidden');}
+async function action(fn,args){if(busy)return;busy=true;try{const s=await ldRpc(fn,args);paint(s)}catch(e){msg('⚠ '+ldMessage(e))}finally{busy=false}}
+$('play').onclick=()=>{if(!mine()||selected<0)return;const card=state.my_hand[selected];if(!playable(card))return;const args={p_room_code:code,p_card:card,p_target_user_id:targetNeeded(card)?$('target').value:null,p_bet:null};if(card==='gamble'){const bet=Number($('bet').value),debt=me().debt;if(!Number.isInteger(bet)||bet<11||bet>20||bet>debt||debt+bet>100){msg('GAMBLE: bet 11–20, cannot exceed your debt or 100 after losing.');return}args.p_bet=bet}selected=-1;action('play_card',args)};
+$('replace').onclick=()=>{if(selected<0)return;const c=state.my_hand[selected];selected=-1;action('replace_card',{p_room_code:code,p_card:c})};$('skip').onclick=()=>{if(confirm('Skip your turn and add 5 debt?'))action('skip_turn_pushups',{p_room_code:code})};$('reroll').onclick=()=>{if(selected<0)return;if(!confirm('Swap the selected card for one random card? Cost: +10 debt.'))return;const c=state.my_hand[selected];selected=-1;action('reroll_card_pushups',{p_room_code:code,p_card:c})};$('shieldYes').onclick=()=>action('respond_shield',{p_room_code:code,p_use_shield:true});$('shieldNo').onclick=()=>action('respond_shield',{p_room_code:code,p_use_shield:false});$('rematch').onclick=()=>action('vote_rematch',{p_room_code:code,p_ready:!me()?.rematch_ready});$('view').onclick=()=>{overlayDismissed=true;$('end').classList.add('hidden')};$('reopen').onclick=()=>{overlayDismissed=false;$('end').classList.remove('hidden')};
+async function refresh(){if(busy||!code)return;try{let s=await ldRpc('get_game_state',{p_room_code:code});if(s.pending_action&&s.pending_deadline&&Date.now()>=new Date(s.pending_deadline).getTime()){s=await ldRpc('resolve_shield_timeout',{p_room_code:code})}paint(s)}catch(e){$('loading').textContent='Connection / game error: '+ldMessage(e)}}
+async function init(){if(!/^\d{6}$/.test(code||'')){$('loading').textContent='Missing room code. Join or create a room first.';return}try{const c=await ldClient();const {data:{user}}=await c.auth.getUser();myId=user.id;sessionStorage.setItem('lastdebt-room-code',code);await refresh();poll=setInterval(refresh,1500)}catch(e){$('loading').textContent='Connection failed: '+ldMessage(e)}}window.addEventListener('pagehide',()=>clearInterval(poll));init();})();
+</script></body></html>
